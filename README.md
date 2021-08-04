@@ -4,7 +4,7 @@
 
 ---
 
-![DemoFile%20b3e88a7caafe4120afc80006036793ce/Untitled.png](src\main\resources\static\images/img.png) 
+![DemoFile%20b3e88a7caafe4120afc80006036793ce/img.png](src\main\resources\static\images/img.png) 
 
 프로젝트의 화면구성은 위의 이미지가 끝입니다 !
 
