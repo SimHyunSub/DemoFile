@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Page Title</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+</head>
+<style>
+    li {
+        margin-top: 15px;
+    }
+    input[type=button] {
+        background-color: white;
+        font-weight: bold;
+    }
+</style>
+<body>
+    <ul>
+    	<li><input type="button" data-id="img" value="Jellyfish.jpg"></li>
+    	<li><input type="button" data-id="bigFile" value="1GB.zip"></li>
+    	<li><input type="button" data-id="hugeFile" value="6.8GB.zip"></li>
+    </ul>
+</body>
+</html>
+
+<script>
+    window.onload = () => {
+
+        const liItems = document.querySelector('ul').children;
+        for (let i = 0; i < liItems.length; i++) {
+            let el = liItems[i];
+            el.innerHTML += `
+                <select data-id="${el.querySelector('input').dataset.id}">
+                    <option value="DEFAULT"> [DEFAULT] input -> FileInputStream read byte[], output -> ServletOutputStream</option>
+                    <option value="DATA_STREAM">[DATA_STREAM] input -> DataInputStream read byte[], output -> DataOutputStream</option>
+                    <option value="BYTE_BUFFER">[BYTE_BUFFER] input -> get Channel for FileInputStream read ByteBuffer, output -> Channel</option>
+                    <option value="BYTE_BUFFER_RANDOM_ACCESS">[BYTE_BUFFER_RANDOM_ACCESS] input -> get Channel for RandomAccessFile read ByteBuffer, output -> Channel</option>
+                    <option value="BUFFERED_STREAM">[BUFFERED_STREAM] input -> BufferedInputStream read byte[], output -> BufferedOutputStream</option>
+                </select>
+            `;
+        }
+
+        document.querySelector('ul').addEventListener("click", (e) => {
+
+            let el = e.target;
+            let id = el.dataset.id;
+
+            if( el.nodeName == "INPUT" ) {
+
+                // 파일로 다운로드 받으려면
+                let id = el.dataset.id;
+                let fileName = document.querySelector(`input[data-id=${id}]`).value;
+                let type = document.querySelector(`select[data-id=${id}]`).value;
+                
+                location.href = `/fileDownLoad?fileName=${fileName}&type=${type}`;
+
+                //미리보기. 이미지만 가능 !
+                fetch(`/preview`,{
+                    body : JSON.stringify({
+                        fileName : fileName
+                        ,type : type
+                    })
+                    ,headers : {
+                        "Content-Type" : "application/json"
+                    }
+                    ,method : "POST"
+                })
+                .then( res => res.blob() )
+                .then( blob => {
+                    document.querySelector('ul').innerHTML += `<li><img src="${URL.createObjectURL(blob)}"></li>`
+                });
+            }
+        });
+    }
+</script>

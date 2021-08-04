@@ -1,0 +1,7 @@
+${AnsiBackground.RED}███████╗██╗  ██╗███████╗
+${AnsiBackground.BLUE}██╔════╝██║  ██║██╔════╝
+${AnsiBackground.YELLOW}███████╗███████║███████╗
+${AnsiBackground.GREEN}╚════██║██╔══██║╚════██║
+${AnsiBackground.MAGENTA}███████║██║  ██║███████║
+${AnsiBackground.YELLOW}╚══════╝╚═╝  ╚═╝╚══════╝
+${AnsiBackground.DEFAULT}
