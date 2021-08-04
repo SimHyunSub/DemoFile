@@ -10,7 +10,7 @@
 
 첨부파일 입출력 속도테스트를 위한거라 별도의 화면은 없습니다.
 
-spring boot project이며 file 입출력 속도 테스트를 위해 다양한 file입출력 class를 사용하였음. 
+spring boot project이며 file 입출력 속도 테스트를 위해 다양한 file입출력 class를 사용하였음.
 
 `(java.io, java.nio package)`
 
