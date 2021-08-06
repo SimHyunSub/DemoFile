@@ -24,8 +24,10 @@ public class HomeController {
 	@RequestMapping("fileDownLoad")
 	public void fileDownLoad(HttpServletResponse response
 			, @RequestParam(name = "type", defaultValue = "") FileDownLoadEnum type
-			, @RequestParam(name = "fileName", defaultValue = "") String fileName ) {
+			, @RequestParam(name = "fileName", defaultValue = "") String fileName 
+			, @RequestParam(name = "bufferSize", defaultValue = "") int bufferSize ) {
 		
-		homeService.fileHandler( response, FileVO.builder().type(type).fileName(fileName).build() );
+		FileVO file = FileVO.builder().type(type).fileName(fileName).bufferSize(bufferSize).build();
+		homeService.fileHandler( response, file);
 	}
 }

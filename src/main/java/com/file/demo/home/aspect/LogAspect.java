@@ -22,7 +22,7 @@ public class LogAspect {
 		stopWatch.stop();
 
 		log.info(stopWatch.prettyPrint());
-		log.info(String.valueOf(stopWatch.getTotalTimeSeconds()) + " s");
+		log.info("running time = {}", String.valueOf(stopWatch.getTotalTimeSeconds()) + " seconds");
 		
 		return result;
 	}

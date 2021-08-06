@@ -16,4 +16,5 @@ import lombok.ToString;
 public class FileVO {
 	private String fileName;
 	private FileDownLoadEnum type;
+	private int bufferSize;
 }

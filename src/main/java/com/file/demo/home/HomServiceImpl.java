@@ -35,9 +35,9 @@ public class HomServiceImpl implements HomeService {
 
 	@LogExecutionTime
 	@Override
-	public void fileHandler(HttpServletResponse response, FileVO vo) {
+	public void fileHandler(HttpServletResponse response, FileVO file) {
 		
-		String fileName = vo.getFileName();
+		String fileName = file.getFileName();
 		String encodedFileName = null;
 		
 		try {
@@ -47,71 +47,71 @@ public class HomServiceImpl implements HomeService {
 		}
 		
 		response.setHeader("Content-Disposition", "attachment;filename=" + encodedFileName + ";");
-		log.info("file name = {}, encoded file name = {}, method type = {}", fileName, fileName, vo.getType());
+		log.info("file name = {}, encoded file name = {}, file download type = {}", fileName, fileName, file.getType());
 		
-		switch (vo.getType()) {
+		switch (file.getType()) {
 		case DEFAULT:
-			fileStream(response, fileName);
+			fileStream(response, file);
 			break;
 		case DATA_STREAM:
-			dataStream(response, fileName);
+			dataStream(response, file);
 			break;
 		case BUFFERED_STREAM:
-			bufferedStream(response, fileName);
+			bufferedStream(response, file);
 			break;
 		case BYTE_BUFFER:
-			fileChannel(response, fileName);
+			fileChannel(response, file);
 			break;
 		case BYTE_BUFFER_RANDOM_ACCESS:
-			fileChannelRandomAccess(response, fileName);
+			fileChannelRandomAccess(response, file);
 			break;
 		default:
 			break;
 		}
 	}
 
-	public void dataStream(HttpServletResponse response, String fileName) {
+	public void dataStream(HttpServletResponse response, FileVO file) {
 		
 		try (
-				DataInputStream is = new DataInputStream(new FileInputStream(FILE_PATH + fileName));
+				DataInputStream is = new DataInputStream(new FileInputStream(FILE_PATH + file.getFileName()));
 				DataOutputStream os = new DataOutputStream(response.getOutputStream()); 
 		) {
-			readWrite(is, os);
+			readWrite(is, os, file);
 			
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
 	}
 	
-	public void fileStream(HttpServletResponse response, String fileName) {
+	public void fileStream(HttpServletResponse response, FileVO file) {
 		
 		try (
-				FileInputStream is = new FileInputStream(FILE_PATH + fileName);
+				FileInputStream is = new FileInputStream(FILE_PATH + file.getFileName());
 				ServletOutputStream os = response.getOutputStream();
 		) {
-			readWrite(is, os);
+			readWrite(is, os, file);
 			
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
 	}
 	
-	public void bufferedStream(HttpServletResponse response, String fileName) {
+	public void bufferedStream(HttpServletResponse response, FileVO file) {
 		
 		try (
-				BufferedInputStream is = new BufferedInputStream( new FileInputStream(FILE_PATH + fileName));
+				BufferedInputStream is = new BufferedInputStream( new FileInputStream(FILE_PATH + file.getFileName()));
 				BufferedOutputStream os = new BufferedOutputStream(response.getOutputStream());
 		) {
-			readWrite(is,os);
+			readWrite(is, os, file);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
 	}
 	
-	public void fileChannel(HttpServletResponse response, String fileName) {
+	public void fileChannel(HttpServletResponse response, FileVO file) {
 		
 		try (
-				FileChannel channel = new FileInputStream(FILE_PATH + fileName).getChannel();
+				FileChannel channel = new FileInputStream(FILE_PATH + file.getFileName()).getChannel();
 				WritableByteChannel outChannel = Channels.newChannel(response.getOutputStream());
 		) {
 
@@ -134,19 +134,21 @@ public class HomServiceImpl implements HomeService {
 		}
 	}
 	
-	public void fileChannelRandomAccess(HttpServletResponse response, String fileName) {
+	public void fileChannelRandomAccess(HttpServletResponse response, FileVO file) {
 		
 		try (
-				FileChannel channel = new RandomAccessFile(FILE_PATH + fileName,"r").getChannel();
+				FileChannel channel = new RandomAccessFile(FILE_PATH + file.getFileName(),"r").getChannel();
 				WritableByteChannel outChannel = Channels.newChannel(response.getOutputStream());
 		) {
 			
-			int bufferSize = 1024;
+			int bufferSize = file.getBufferSize();
 			if (bufferSize > channel.size()) {
 				bufferSize = (int) channel.size();
 			}
 			
-			ByteBuffer buffer = ByteBuffer.allocateDirect( 1000 * bufferSize );
+			log.info("buffer size = {}", bufferSize);
+			
+			ByteBuffer buffer = ByteBuffer.allocateDirect( bufferSize );
 			while ( channel.read(buffer) != -1 ) {
 				buffer.flip();
 				outChannel.write(buffer);
@@ -160,16 +162,18 @@ public class HomServiceImpl implements HomeService {
 		}
 	}
 	
-	public void readWrite (InputStream is, OutputStream os) throws IOException {
+	public void readWrite (InputStream is, OutputStream os, FileVO file) throws IOException {
 
-	    int bufferSize = 1024;
+	    int bufferSize = file.getBufferSize();
 	    int available = is.available();
 	    if (bufferSize > available) {
 	        bufferSize = available;
 	    }
 	    
+	    log.info("buffer size = {}", bufferSize);
+	    
 		if(bufferSize > 0) {
-			byte[] buffer = new byte[ 1000 * bufferSize ];
+			byte[] buffer = new byte[ bufferSize ];
 			int read = 0;
 			while ( ( read = is.read( buffer, 0, buffer.length ) ) != -1 ) {
 				os.write(buffer, 0, read);

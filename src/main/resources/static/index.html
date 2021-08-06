@@ -5,6 +5,7 @@
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <title>Page Title</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
+	<link href="/images/favicon.ico" rel="shortcut icon" type="image/x-icon" />
 </head>
 <style>
     li {
@@ -19,7 +20,8 @@
     <ul>
     	<li><input type="button" data-id="img" value="Jellyfish.jpg"></li>
     	<li><input type="button" data-id="bigFile" value="1GB.zip"></li>
-    	<li><input type="button" data-id="hugeFile" value="6.8GB.zip"></li>
+    	<li><input type="button" data-id="hugeFile" value="6.8GB.zip"></li> <br>
+        <input type="number" min=10 data-id="bufferSize" placeholder="you can input buffer size ! default 1024" required style="width: 250px;">
     </ul>
 </body>
 </html>
@@ -29,16 +31,19 @@
 
         const liItems = document.querySelector('ul').children;
         for (let i = 0; i < liItems.length; i++) {
+
             let el = liItems[i];
-            el.innerHTML += `
-                <select data-id="${el.querySelector('input').dataset.id}">
-                    <option value="DEFAULT"> [DEFAULT] input -> FileInputStream read byte[], output -> ServletOutputStream</option>
-                    <option value="DATA_STREAM">[DATA_STREAM] input -> DataInputStream read byte[], output -> DataOutputStream</option>
-                    <option value="BYTE_BUFFER">[BYTE_BUFFER] input -> get Channel for FileInputStream read ByteBuffer, output -> Channel</option>
-                    <option value="BYTE_BUFFER_RANDOM_ACCESS">[BYTE_BUFFER_RANDOM_ACCESS] input -> get Channel for RandomAccessFile read ByteBuffer, output -> Channel</option>
-                    <option value="BUFFERED_STREAM">[BUFFERED_STREAM] input -> BufferedInputStream read byte[], output -> BufferedOutputStream</option>
-                </select>
-            `;
+            if(el.nodeName == "LI"){
+                el.innerHTML += `
+                    <select data-id="${el.querySelector('input').dataset.id}">
+                        <option value="DEFAULT"> [DEFAULT] input -> FileInputStream read byte[], output -> ServletOutputStream</option>
+                        <option value="DATA_STREAM">[DATA_STREAM] input -> DataInputStream read byte[], output -> DataOutputStream</option>
+                        <option value="BYTE_BUFFER">[BYTE_BUFFER] input -> get Channel for FileInputStream read ByteBuffer, output -> Channel</option>
+                        <option value="BYTE_BUFFER_RANDOM_ACCESS">[BYTE_BUFFER_RANDOM_ACCESS] input -> get Channel for RandomAccessFile read ByteBuffer, output -> Channel</option>
+                        <option value="BUFFERED_STREAM">[BUFFERED_STREAM] input -> BufferedInputStream read byte[], output -> BufferedOutputStream</option>
+                    </select>
+                `;
+            }
         }
 
         document.querySelector('ul').addEventListener("click", (e) => {
@@ -46,30 +51,32 @@
             let el = e.target;
             let id = el.dataset.id;
 
-            if( el.nodeName == "INPUT" ) {
+            if( el.nodeName == "INPUT" && el.type != "number" ) {
 
                 // 파일로 다운로드 받으려면
                 let id = el.dataset.id;
                 let fileName = document.querySelector(`input[data-id=${id}]`).value;
                 let type = document.querySelector(`select[data-id=${id}]`).value;
-                
-                location.href = `/fileDownLoad?fileName=${fileName}&type=${type}`;
+                let bufferSize = Number(document.querySelector(`input[data-id=bufferSize]`).value);
+                bufferSize = (bufferSize < 10) ? 1024 : bufferSize;
+
+                location.href = `/fileDownLoad?fileName=${fileName}&type=${type}&bufferSize=${bufferSize}`;
 
                 //미리보기. 이미지만 가능 !
-                fetch(`/preview`,{
-                    body : JSON.stringify({
-                        fileName : fileName
-                        ,type : type
-                    })
-                    ,headers : {
-                        "Content-Type" : "application/json"
-                    }
-                    ,method : "POST"
-                })
-                .then( res => res.blob() )
-                .then( blob => {
-                    document.querySelector('ul').innerHTML += `<li><img src="${URL.createObjectURL(blob)}"></li>`
-                });
+                // fetch(`/preview`,{
+                //     body : JSON.stringify({
+                //         fileName : fileName
+                //         ,type : type
+                //     })
+                //     ,headers : {
+                //         "Content-Type" : "application/json"
+                //     }
+                //     ,method : "POST"
+                // })
+                // .then( res => res.blob() )
+                // .then( blob => {
+                //     document.querySelector('ul').innerHTML += `<li><img src="${URL.createObjectURL(blob)}"></li>`
+                // });
             }
         });
     }
