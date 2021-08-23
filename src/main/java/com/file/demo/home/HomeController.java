@@ -13,21 +13,24 @@ import com.file.demo.home.enm.FileDownLoadEnum;
 @RestController
 public class HomeController {
 
-	@Autowired
-	private HomeService homeService;
-	
+	private final HomeService homeService;
+
+	private HomeController( HomeService homeService ) {
+		this.homeService = homeService;
+	}
+
 	@RequestMapping("preview")
 	public void preview(HttpServletResponse response, @RequestBody FileVO vo) {
 		homeService.fileHandler(response, vo);
 	}
-	
+
 	@RequestMapping("fileDownLoad")
 	public void fileDownLoad(HttpServletResponse response
 			, @RequestParam(name = "type", defaultValue = "") FileDownLoadEnum type
-			, @RequestParam(name = "fileName", defaultValue = "") String fileName 
-			, @RequestParam(name = "bufferSize", defaultValue = "") int bufferSize ) {
-		
+			, @RequestParam(name = "fileName", defaultValue = "") String fileName
+			, @RequestParam(name = "bufferSize", defaultValue = "") int bufferSize) {
+
 		FileVO file = FileVO.builder().type(type).fileName(fileName).bufferSize(bufferSize).build();
-		homeService.fileHandler( response, file);
+		homeService.fileHandler(response, file);
 	}
 }
