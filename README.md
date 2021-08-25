@@ -58,8 +58,3 @@ AOP를 통해 파일 입출력 method가 동작하는 시간 체크 기능이 �
 git - [https://github.com/hyun-sseob/DemoFile](https://github.com/hyun-sseob/DemoFile)
 
 
-
-<br>
-<br>
-
-[![Readme Card](https://github-readme-stats.vercel.app/api/pin/?username=hyun-sseob&repo=DemoFile)](https://github.com/hyun-sseob/DemoFile)
