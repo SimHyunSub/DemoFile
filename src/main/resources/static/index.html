@@ -36,11 +36,10 @@
             if(el.nodeName == "LI"){
                 el.innerHTML += `
                     <select data-id="${el.querySelector('input').dataset.id}">
-                        <option value="DEFAULT"> [DEFAULT] input -> FileInputStream read byte[], output -> ServletOutputStream</option>
-                        <option value="DATA_STREAM">[DATA_STREAM] input -> DataInputStream read byte[], output -> DataOutputStream</option>
-                        <option value="BYTE_BUFFER">[BYTE_BUFFER] input -> get Channel for FileInputStream read ByteBuffer, output -> Channel</option>
-                        <option value="BYTE_BUFFER_RANDOM_ACCESS">[BYTE_BUFFER_RANDOM_ACCESS] input -> get Channel for RandomAccessFile read ByteBuffer, output -> Channel</option>
-                        <option value="BUFFERED_STREAM">[BUFFERED_STREAM] input -> BufferedInputStream read byte[], output -> BufferedOutputStream</option>
+                        <option value="DEFAULT"> java.io File I/O Stream </option>
+                        <option value="BUFFERED_STREAM"> java.io Buffered I/O Stream</option>
+                        <option value="CHANNEL"> java.nio Channel </option>
+                        <option value="CHANNEL_RANDOM_ACCESS"> java.nio Channel and Random access </option>
                     </select>
                 `;
             }
