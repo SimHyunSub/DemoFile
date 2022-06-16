@@ -94,9 +94,8 @@ public class HomServiceImpl implements HomeService {
 		    if (bufferSize > channel.size()) {
 		        bufferSize = (int) channel.size();
 		    }
-		    
 		    ByteBuffer buffer = ByteBuffer.allocateDirect( 1000 * bufferSize );
-		    while ( channel.read(buffer) != -1 ) {
+		    while ( buffer.hasRemaining() ) {
 		    	buffer.flip();
 		    	outChannel.write(buffer);
 		    	buffer.clear();
@@ -122,7 +121,7 @@ public class HomServiceImpl implements HomeService {
 			log.info("buffer size = {}", bufferSize);
 			
 			ByteBuffer buffer = ByteBuffer.allocateDirect( bufferSize );
-			while ( channel.read(buffer) != -1 ) {
+			while ( buffer.hasRemaining() ) {
 				buffer.flip();
 				outChannel.write(buffer);
 				buffer.clear();
