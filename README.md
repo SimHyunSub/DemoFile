@@ -1,4 +1,4 @@
-# DemoFile
+# java.io vs java.nio
 
 # About The Projcet !
 
@@ -31,6 +31,8 @@ AOP를 통해 파일 입출력 method가 동작하는 시간 체크 기능이 �
 
 `index.html` 에서 테스트 하고싶은 file명을 변경해서 테스트해야합니다. ~~귀찮게 만들어서 죄송합니다 ㅠ~~
 
+file 경로는 `application.properties` 에 정의 해야 합니다.
+
 <br>
 <br>
 <br>
@@ -55,6 +57,5 @@ AOP를 통해 파일 입출력 method가 동작하는 시간 체크 기능이 �
 
 🕊 [@orolsyeo](https://twitter.com/orolsyeo)
 
-git - [https://github.com/hyun-sseob/DemoFile](https://github.com/hyun-sseob/DemoFile)
-
+git - [https://github.com/hyun-sseob/demo-nio-vs-io](https://github.com/hyun-sseob/demo-nio-vs-io)
 
